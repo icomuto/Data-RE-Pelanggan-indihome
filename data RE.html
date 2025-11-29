@@ -2,100 +2,173 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Input Database Pelanggan</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Input Registrasi Pelanggan</title>
+    
+    <!-- Bootstrap 5 CSS (Tampilan Modern) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome (Ikon) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SweetAlert2 (Pop up cantik) -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #e9ecef; padding: 20px; }
-        .container { max-width: 500px; margin: 0 auto; background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: #333; margin-bottom: 20px; border-bottom: 2px solid #0088cc; padding-bottom: 10px; }
-        label { display: block; margin-top: 12px; font-weight: 600; font-size: 14px; color: #555; }
-        input, select, textarea { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; transition: border 0.3s; }
-        input:focus, select:focus, textarea:focus { border-color: #0088cc; outline: none; }
-        
-        .buttons { margin-top: 25px; }
-        button { width: 100%; padding: 15px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 16px; transition: background 0.3s; }
-        
-        .btn-submit { background-color: #0088cc; color: white; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .btn-submit:hover { background-color: #006699; }
-        .btn-submit:disabled { background-color: #ccc; cursor: not-allowed; }
-
-        .loading-spinner {
-            border: 4px solid #f3f3f3; border-top: 4px solid #fff; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: none;
+        body {
+            background-color: #f0f2f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        #output { height: 1px; width: 1px; opacity: 0; position: absolute; } /* Hidden but selectable */
-        .status-msg { text-align: center; margin-top: 10px; font-size: 14px; font-weight: bold; min-height: 20px; }
-        .success { color: green; }
-        .error { color: red; }
+        .main-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .header-bg {
+            background: linear-gradient(135deg, #0d6efd, #0a58ca);
+            color: white;
+            border-radius: 15px 15px 0 0;
+            padding: 20px;
+            text-align: center;
+        }
+        .form-floating > label {
+            font-size: 0.9rem;
+        }
+        .btn-kirim {
+            background: linear-gradient(135deg, #198754, #157347);
+            border: none;
+            padding: 12px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: transform 0.2s;
+        }
+        .btn-kirim:active {
+            transform: scale(0.98);
+        }
+        /* Hidden textarea for copy mechanism */
+        #clipboardArea {
+            position: absolute;
+            left: -9999px;
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>DATA REGISTRASI</h2>
-    
-    <form id="dataForm">
-        <label>TRACK ID :</label>
-        <input type="text" id="trackId" placeholder="Masukkan Track ID" required>
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+            <div class="card main-card">
+                <div class="header-bg">
+                    <h4 class="mb-0"><i class="fa-solid fa-user-plus me-2"></i>Registrasi Pelanggan</h4>
+                    <small>Input Data & Auto Copy Telegram</small>
+                </div>
+                
+                <div class="card-body p-4">
+                    <form id="inputForm">
+                        
+                        <!-- TRACK ID -->
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="trackId" placeholder="Track ID" required>
+                            <label for="trackId">TRACK ID</label>
+                        </div>
 
-        <label>Nama sesuai KTP :</label>
-        <input type="text" id="nama" placeholder="Nama Lengkap" required>
+                        <!-- NAMA -->
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="nama" placeholder="Nama Sesuai KTP" required>
+                            <label for="nama">Nama sesuai KTP</label>
+                        </div>
 
-        <label>Alamat pemasangan :</label>
-        <textarea id="alamat" rows="2" placeholder="Alamat Lengkap" required></textarea>
+                        <!-- ALAMAT -->
+                        <div class="form-floating mb-3">
+                            <textarea class="form-control" id="alamat" placeholder="Alamat" style="height: 80px" required></textarea>
+                            <label for="alamat">Alamat Pemasangan</label>
+                        </div>
 
-        <label>Email aktif :</label>
-        <input type="email" id="email" placeholder="contoh@gmail.com">
+                        <!-- KONTAK -->
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <div class="form-floating">
+                                    <input type="tel" class="form-control" id="telp" placeholder="No HP" required>
+                                    <label for="telp">No. Telp Aktif</label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-floating">
+                                    <input type="tel" class="form-control" id="telpAlt" placeholder="No Alt">
+                                    <label for="telpAlt">No. Alternatif</label>
+                                </div>
+                            </div>
+                        </div>
 
-        <label>No.telp aktif :</label>
-        <input type="tel" id="telp" placeholder="08xxxxxxxxxx" required>
+                        <!-- EMAIL -->
+                        <div class="form-floating mb-3">
+                            <input type="email" class="form-control" id="email" placeholder="Email">
+                            <label for="email">Email Aktif</label>
+                        </div>
 
-        <label>No.telp alternatif :</label>
-        <input type="tel" id="telpAlt" placeholder="08xxxxxxxxxx">
+                        <!-- PAKET & HARGA -->
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <div class="form-floating">
+                                    <select class="form-select" id="paket" onchange="updateHarga()" required>
+                                        <option value="" selected disabled>Pilih</option>
+                                        <option value="20 mbps">20 mbps</option>
+                                        <option value="50 mbps">50 mbps</option>
+                                        <option value="75 mbps">75 mbps</option>
+                                        <option value="150 mbps">150 mbps</option>
+                                        <option value="200 mbps">200 mbps</option>
+                                    </select>
+                                    <label for="paket">Paket</label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-floating">
+                                    <select class="form-select" id="harga" required>
+                                        <option value="" selected disabled>Harga</option>
+                                        <option value="Rp190.000">Rp190.000</option>
+                                        <option value="Rp240.000">Rp240.000</option>
+                                        <option value="Rp270.000">Rp270.000</option>
+                                        <option value="Rp375.000">Rp375.000</option>
+                                        <option value="Rp515.000">Rp515.000</option>
+                                    </select>
+                                    <label for="harga">Harga</label>
+                                </div>
+                            </div>
+                        </div>
 
-        <label>Paket yang di pilih :</label>
-        <select id="paket" onchange="updateHarga()" required>
-            <option value="">-- Pilih Paket --</option>
-            <option value="20 mbps">20 mbps</option>
-            <option value="50 mbps">50 mbps</option>
-            <option value="75 mbps">75 mbps</option>
-            <option value="150 mbps">150 mbps</option>
-            <option value="200 mbps">200 mbps</option>
-        </select>
+                        <!-- NO INTERNET -->
+                        <div class="form-floating mb-4">
+                            <input type="text" class="form-control" id="noInternet" placeholder="No Internet">
+                            <label for="noInternet">No. Internet</label>
+                        </div>
 
-        <label>Harga paket :</label>
-        <select id="harga" required>
-            <option value="">-- Pilih Harga --</option>
-            <option value="Rp190.000">Rp190.000</option>
-            <option value="Rp240.000">Rp240.000</option>
-            <option value="Rp270.000">Rp270.000</option>
-            <option value="Rp375.000">Rp375.000</option>
-            <option value="Rp515.000">Rp515.000</option>
-        </select>
+                        <!-- TOMBOL -->
+                        <button type="submit" class="btn btn-success w-100 btn-kirim shadow">
+                            <i class="fa-brands fa-telegram me-2"></i> KIRIM & COPY
+                        </button>
+                        
+                        <div class="text-center mt-3">
+                            <small class="text-muted fst-italic">*Foto KTP & Rupel diupload manual di Telegram</small>
+                        </div>
 
-        <label>No. Internet :</label>
-        <input type="text" id="noInternet" placeholder="Nomor Internet">
-        
-        <div class="buttons">
-            <button type="button" class="btn-submit" onclick="prosesData()" id="btnKirim">
-                <div class="loading-spinner" id="spinner"></div>
-                KIRIM KE DATABASE & COPY
-            </button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="text-center mt-3 text-muted">
+                <small>&copy; 2025 Database Management</small>
+            </div>
         </div>
-        <div id="status" class="status-msg"></div>
-    </form>
-
-    <!-- Area tersembunyi untuk copy text -->
-    <textarea id="output"></textarea>
+    </div>
 </div>
 
-<script>
-    // =========================================================
-    // PASTE URL DARI GOOGLE APPS SCRIPT DI BAWAH INI (Di dalam tanda kutip)
-    // =========================================================
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzQ_nOhO0sPwIcxY4xHO2YS941zbwj3qHNdj5B4Ib3l6Fx1d5QIdb8uYjrcEmIh1_822g/exec'; 
+<textarea id="clipboardArea"></textarea>
 
+<script>
+    // ==========================================================
+    // CONFIG: MASUKKAN URL GOOGLE SCRIPT DI SINI (DALAM KUTIP)
+    // ==========================================================
+    const SCRIPT_URL = 'GANTI_DENGAN_URL_APPS_SCRIPT_ANDA_DISINI'; 
+
+    // Mapping Harga Otomatis
     function updateHarga() {
         const paket = document.getElementById("paket").value;
         const hargaSelect = document.getElementById("harga");
@@ -111,71 +184,40 @@
         }
     }
 
-    function prosesData() {
-        const btn = document.getElementById('btnKirim');
-        const spinner = document.getElementById('spinner');
-        const status = document.getElementById('status');
+    // Handle Submit Form
+    document.getElementById('inputForm').addEventListener('submit', function(e) {
+        e.preventDefault(); // Mencegah reload halaman
         
-        // Ambil Data
+        const btn = document.querySelector('.btn-kirim');
+        const originalText = btn.innerHTML;
+        
+        // Ambil Data Form
         const data = {
             trackId: document.getElementById("trackId").value,
             nama: document.getElementById("nama").value,
             alamat: document.getElementById("alamat").value,
-            email: document.getElementById("email").value,
+            email: document.getElementById("email").value || "-",
             telp: document.getElementById("telp").value,
-            telpAlt: document.getElementById("telpAlt").value,
+            telpAlt: document.getElementById("telpAlt").value || "-",
             paket: document.getElementById("paket").value,
             harga: document.getElementById("harga").value,
-            noInternet: document.getElementById("noInternet").value
+            noInternet: document.getElementById("noInternet").value || "-"
         };
 
-        // Validasi simpel
-        if(!data.nama || !data.paket) {
-            alert("Harap lengkapi Nama dan Paket!");
-            return;
-        }
-
-        // Tampilkan Loading
+        // Loading State
         btn.disabled = true;
-        spinner.style.display = "block";
-        btn.firstChild.nextSibling.textContent = " SEDANG MENGIRIM...";
-        status.textContent = "";
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengirim...';
 
-        // 1. KIRIM KE GOOGLE SHEETS
+        // 1. Kirim ke Google Sheets
         fetch(SCRIPT_URL, {
             method: 'POST',
-            mode: 'no-cors', // Penting agar tidak error di browser
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            mode: 'no-cors', 
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         })
         .then(() => {
-            // 2. JIKA SUKSES, COPY TEXT TELEGRAM
-            copyToClipboard(data);
-            
-            // Reset Form & UI
-            document.getElementById("dataForm").reset();
-            status.className = "status-msg success";
-            status.textContent = "✅ Data tersimpan di Database & Tercopy!";
-            
-            setTimeout(() => { status.textContent = ""; }, 5000);
-        })
-        .catch(err => {
-            console.error('Error:', err);
-            status.className = "status-msg error";
-            status.textContent = "❌ Gagal mengirim ke Database, tapi teks tercopy.";
-            copyToClipboard(data); // Tetap copy teks meski database gagal
-        })
-        .finally(() => {
-            btn.disabled = false;
-            spinner.style.display = "none";
-            btn.firstChild.nextSibling.textContent = "KIRIM KE DATABASE & COPY";
-        });
-    }
-
-    function copyToClipboard(data) {
-        const textResult = `DATA REGISTRASI PELANGGAN
+            // 2. Format Teks Telegram
+            const textResult = `DATA REGISTRASI PELANGGAN
 
 TRACK ID : ${data.trackId}
 👉Nama sesuai KTP: ${data.nama}
@@ -189,15 +231,37 @@ TRACK ID : ${data.trackId}
 👉No . Internet : ${data.noInternet}
 👉Foto Rupel : (Terlampir)`;
 
-        const outputBox = document.getElementById("output");
-        outputBox.value = textResult;
-        outputBox.select();
-        outputBox.setSelectionRange(0, 99999);
-        navigator.clipboard.writeText(textResult).then(() => {
-            // Optional: Alert jika ingin notifikasi pop-up
-            // alert("Teks sudah di-copy! Silakan paste ke Telegram."); 
+            // 3. Copy ke Clipboard
+            const area = document.getElementById("clipboardArea");
+            area.value = textResult;
+            area.select();
+            document.execCommand("copy"); // Fallback method
+
+            // 4. Tampilkan Sukses
+            Swal.fire({
+                title: 'Berhasil!',
+                text: 'Data masuk Database & Teks sudah dicopy!',
+                icon: 'success',
+                confirmButtonColor: '#198754',
+                confirmButtonText: 'Oke, Buka Telegram'
+            });
+
+            // Reset Form
+            document.getElementById("inputForm").reset();
+        })
+        .catch(error => {
+            console.error('Error!', error.message);
+            Swal.fire({
+                title: 'Error!',
+                text: 'Gagal koneksi ke database. Cek internet Anda.',
+                icon: 'error'
+            });
+        })
+        .finally(() => {
+            btn.disabled = false;
+            btn.innerHTML = originalText;
         });
-    }
+    });
 </script>
 
 </body>
